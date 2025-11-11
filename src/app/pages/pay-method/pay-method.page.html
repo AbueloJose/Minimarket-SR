@@ -1,0 +1,100 @@
+<div class="background-image"></div>
+
+<ion-content fullscreen>
+  <section class="main-container-pay">
+    <button class="btn-back" (click)="goBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      <p>Regresar</p>
+    </button>
+
+
+    <section class="header-pay-section">
+      <img src="/assets/img/money-cash-chicken.svg" alt="Money Chicken" />
+    </section>
+
+    <section class="user-address">
+      <h1>Dirección de Entrega:</h1>
+      <p *ngIf="usuario">{{usuario.direccion}}</p>
+    </section>
+
+    <section class="header-subtitle-section">
+      <h1>Agregar Tarjeta:</h1>
+      <button class="add-card-btn" (click)="abrirModalAgregarTarjeta()">
+        <ion-icon name="add-outline"></ion-icon>
+      </button>
+    </section>
+
+
+    <section class="payment-options">
+
+      <div class="payment-method" (click)="metodoSeleccionado = 'efectivo'">
+        <img src="/assets/img/cash-image.svg" alt="Efectivo" class="method-icon" />
+        <span class="method-label">Efectivo</span>
+        <input type="radio" name="metodoPago" [(ngModel)]="metodoSeleccionado" value="efectivo" hidden />
+        <span class="custom-radio" [class.selected]="metodoSeleccionado === 'efectivo'"></span>
+      </div>
+
+      <div class="payment-method" (click)="metodoSeleccionado = 'yape'">
+        <img src="/assets/img/yape-image.svg" alt="Yape" class="method-icon" />
+        <span class="method-label">Yape</span>
+        <input type="radio" name="metodoPago" [(ngModel)]="metodoSeleccionado" value="yape" hidden />
+        <span class="custom-radio" [class.selected]="metodoSeleccionado === 'yape'"></span>
+      </div>
+
+      <div *ngFor="let t of tarjetas" class="payment-method" (click)="metodoSeleccionado = t.id">
+        <img src="/assets/img/visa-card-image.svg" alt="Tarjeta" class="method-icon" />
+        <span class="method-label">TARJETA - {{ t.numero_mascara.slice(-4) }}</span>
+
+        <button class="delete-btn" (click)="confirmarEliminarTarjeta(t.id); $event.stopPropagation()">
+          <ion-icon name="trash-outline"></ion-icon>
+        </button>
+
+        <input type="radio" name="metodoPago" [(ngModel)]="metodoSeleccionado" [value]="t.id" hidden />
+        <span class="custom-radio" [class.selected]="metodoSeleccionado === t.id"></span>
+      </div>
+
+
+
+    </section>
+
+
+    <section class="pay-summary">
+      <div class="summary-left">
+        <span class="summary-title">Total a pagar:</span>
+        <span class="summary-amount">S/ {{ total | number:'1.2-2' }}</span>
+      </div>
+      <div class="summary-right">
+        <button class="checkout-btn" (click)="realizarPedido()">Realizar Pedido</button>
+      </div>
+    </section>
+  </section>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-content">
+      <img src="/assets/img/card-chicken.png" alt="Agregar tarjeta" class="modal-image" />
+      <h2>AGREGA TU TARJETA</h2>
+
+      <section class="form-field">
+        <label>Número de tarjeta</label>
+        <div id="card-number-element" class="stripe-element"></div>
+      </section>
+
+      <section class="form-row">
+        <div class="form-field">
+          <label>MM / YY</label>
+          <div id="card-expiry-element" class="stripe-element"></div>
+        </div>
+        <div class="form-field">
+          <label>CVV</label>
+          <div id="card-cvc-element" class="stripe-element"></div>
+        </div>
+      </section>
+
+      <div class="modal-actions">
+        <button class="save-btn-target" (click)="guardarTarjeta()">Guardar</button>
+        <button (click)="cancelarAgregarTarjeta()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</ion-content>
